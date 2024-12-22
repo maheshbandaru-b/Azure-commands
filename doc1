@@ -20,3 +20,11 @@ az vm create --resource-group ${RG} --name ADOAgent --image UbuntuLTS --vnet-nam
   --admin-password "India@123456" \
   --size Standard_B1s \
   --generate-ssh-keys
+
+
+
+-----To delete resource group-------
+
+for RG in $(az group list | jq ".[].name" | tr -d '"') ; do
+az group delete --name $RG --yes
+done
