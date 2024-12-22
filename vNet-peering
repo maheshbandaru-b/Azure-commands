@@ -3,31 +3,32 @@ RG=HUBRG
 echo "Creating Azure Resource Group"
 az group create --location eastus -n ${RG}
 
-echo "Creating Azure Virtual Network"
+echo "Creating Azure Virtual Network1"
 az network vnet create -g ${RG} -n ${RG}-vNET1 --address-prefix 10.1.0.0/16 \
 --subnet-name ${RG}-Subnet-1 --subnet-prefix 10.1.1.0/24 -l eastus
 
-echo "Creating Azure Virtual Network"
+echo "Creating Azure Virtual Network2"
 az network vnet create -g ${RG} -n ${RG}-vNET2 --address-prefix 10.2.0.0/16 \
 --subnet-name ${RG}-Subnet-1 --subnet-prefix 10.2.1.0/24 -l eastus
 
+echo "Creating Azure Virtual Machine in ${RG}-vNET1"
 az vm create \
-  --resource-group ${RG}\
-  --name HUBLINUX1 \
-  --image Ubuntu2404 \
-  --admin-username azureuser \
-  --admin-password "India@123456" \
-  --size Standard_B1s \
-  --generate-ssh-keys
-  
-  
+    --resource-group ${RG}\
+    --vnet-name ${RG}-vNET1 \
+    --subnet ${RG}-Subnet-1 \
+    --name HUBLINUX1 \
+    --image Ubuntu2404 \
+    --admin-username azureuser \
+    --generate-ssh-keys \
+    --size Standard_B1s
+
+echo "Creating Azure Virtual Machine in ${RG}-vNET2"
 az vm create \
-  --resource-group AZUREB23ADO \
-  --name HUBLINUX1 \
-  --image Ubuntu2404 \
-  --admin-username azureuser \
-  --admin-password "India@123456" \
-  --size Standard_B1s \
-  --generate-ssh-keys
-  
-watch ls
+    --resource-group ${RG}\
+    --vnet-name ${RG}-vNET2 \
+    --subnet ${RG}-Subnet-1 \
+    --name HUBLINUX2 \
+    --image Ubuntu2404 \
+    --admin-username azureuser \
+    --generate-ssh-keys \
+    --size Standard_B1s
